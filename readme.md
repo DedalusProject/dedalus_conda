@@ -35,6 +35,7 @@ We can then install dedalus using `conda install -n dedalus --no-deps --use-loca
 In particular, openmpi sometimes comes from conda-forge (v3) and sometimes from cryoem (v2), in which case conda-forge installs mpi and mpi4py with mpich, and things are all messed up.
 Things seem to get the right order when creating an environment with the file, but not updating an environment with the file.
 A work-around when things go wrong is to remove fftw-mpi from the environment file and add it by hand later.
+Maybe related to this issue: https://github.com/conda/conda/issues/6821.
 
 * Importing dedalus results in a numpy warning, but things seem to run fine:
 `RuntimeWarning: numpy.dtype size changed, may indicate binary incompatibility. Expected 96, got 88`.
