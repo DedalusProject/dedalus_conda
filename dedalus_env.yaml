@@ -1,0 +1,16 @@
+name: dedalus
+channels:
+  - conda-forge
+  - cryoem
+  - defaults
+dependencies:
+  - python=3.6
+  - conda-forge::openmpi
+  - cryoem::fftw-mpi
+  - conda-forge::hdf5
+  - conda-forge::numpy
+  - conda-forge::scipy
+  - conda-forge::mpi4py
+  - conda-forge::h5py
+  - conda-forge::docopt
+  - conda-forge::matplotlib

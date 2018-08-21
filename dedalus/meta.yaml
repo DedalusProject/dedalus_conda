@@ -1,0 +1,34 @@
+{% set name = "dedalus" %}
+{% set version = "2.1808" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  hg_url: ssh://hg@bitbucket.org/kburns/{{ name }}
+  hg_tag: {{ version }}
+
+build:
+  number: 0
+
+requirements:
+  build:
+    - python
+    - setuptools
+    - openmpi
+    - fftw-mpi
+    - cython
+    - numpy
+    - mpi4py
+  run:
+    - python
+    - openmpi
+    - fftw-mpi
+    - hdf5
+    - numpy
+    - scipy
+    - mpi4py
+    - h5py
+    - docopt
+    - matplotlib
