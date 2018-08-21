@@ -37,4 +37,5 @@ Things seem to get the right order when creating an environment with the file, b
 A work-around when things go wrong is to remove fftw-mpi from the environment file and add it by hand later.
 
 * Importing dedalus results in a numpy warning, but things seem to run fine:
-`RuntimeWarning: numpy.dtype size changed, may indicate binary incompatibility. Expected 96, got 88`
+`RuntimeWarning: numpy.dtype size changed, may indicate binary incompatibility. Expected 96, got 88`.
+It looks like this is a harmless warning that was unmasked in numpy 1.15.0 and will be remasked in 1.15.1 (https://github.com/numpy/numpy/issues/11628).
