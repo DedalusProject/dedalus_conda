@@ -33,9 +33,11 @@ We can then install dedalus using `conda install -n dedalus --no-deps --use-loca
 
 * Building from the environment file does not seem to consistenly produce the same build.
 In particular, openmpi sometimes comes from conda-forge (v3) and sometimes from cryoem (v2), in which case conda-forge installs mpi and mpi4py with mpich, and things are all messed up.
-Things seem to get the right order when creating an environment with the file, but not updating an environment with the file.
 A work-around when things go wrong is to remove fftw-mpi from the environment file and add it by hand later.
-Maybe related to this issue: https://github.com/conda/conda/issues/6821.
+
+  UPDATE: Following several conda issues (https://github.com/conda/conda/issues/6821, https://github.com/conda/conda-build/issues/2707) it looks like there really is some non-determinism in the dependency solver.
+  I can consistently get things to build incorrectly by setting the environment variables `PYTHONHASHSEED=1` and build correctly by setting `PYTHONHASHSEED=2`.
+  Yikes.
 
 * Importing dedalus results in a numpy warning, but things seem to run fine:
 `RuntimeWarning: numpy.dtype size changed, may indicate binary incompatibility. Expected 96, got 88`.
