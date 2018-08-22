@@ -31,10 +31,6 @@ We can then install dedalus using `conda install -n dedalus --no-deps --use-loca
 
 ## Issues
 
-* Building from the environment file does not seem to consistenly produce the same build.
-In particular, openmpi sometimes comes from conda-forge (v3) and sometimes from cryoem (v2), in which case conda-forge installs mpi and mpi4py with mpich, and things are all messed up.
-Things seem to get the right order when creating an environment with the file, but not updating an environment with the file.
-A work-around when things go wrong is to remove fftw-mpi from the environment file and add it by hand later.
-
 * Importing dedalus results in a numpy warning, but things seem to run fine:
-`RuntimeWarning: numpy.dtype size changed, may indicate binary incompatibility. Expected 96, got 88`
+`RuntimeWarning: numpy.dtype size changed, may indicate binary incompatibility. Expected 96, got 88`.
+It looks like this is a harmless warning that was unmasked in numpy 1.15.0 and will be remasked in 1.15.1 (https://github.com/numpy/numpy/issues/11628).
