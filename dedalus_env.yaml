@@ -4,7 +4,7 @@ channels:
   - cryoem
   - defaults
 dependencies:
-  - python=3.6
+  - python>=3.5
   - conda-forge::openmpi
   - cryoem::fftw-mpi
   - conda-forge::hdf5
