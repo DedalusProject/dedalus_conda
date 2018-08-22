@@ -14,7 +14,7 @@ The conda build recipe is in the `dedalus` folder and consists of three files:
 
 It currently seems like specific channels are not easily specified in the `meta.yaml` file for the conda build.
 Instead, at build-time we pass a list of channels, ordered by priority.
-The build command is then `conda-build -c conda-forge -c cryoem dedalus`
+The build command is then `conda build -c conda-forge -c cryoem dedalus`
 
 ## Installing the Dedalus conda build
 
@@ -25,7 +25,7 @@ Reference github issues:
 * https://github.com/conda/conda/issues/7548
 * https://github.com/conda/conda/issues/3279
 
-Instead, we can create a conda environment using `conda-env create -n dedalus -f dedalus_env.yaml`.
+Instead, we can create a conda environment using `conda env create -n dedalus -f dedalus_env.yaml`.
 This will setup an environment with all the run-time requirements from conda-forge/cryoem.
 We can then install dedalus using `conda install -n dedalus --no-deps --use-local dedalus`.
 
