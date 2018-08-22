@@ -8,8 +8,9 @@ dependencies:
   - conda-forge::openmpi
   - cryoem::fftw-mpi
   - conda-forge::hdf5
-  - conda-forge::numpy
-  - conda-forge::scipy
+  - conda-forge::cython
+  - conda-forge::numpy=*=*openblas*
+  - conda-forge::scipy=*=*openblas*
   - conda-forge::mpi4py=*=*openmpi*
   - conda-forge::h5py
   - conda-forge::docopt
