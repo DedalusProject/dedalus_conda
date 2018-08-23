@@ -25,7 +25,7 @@ Reference github issues:
 * https://github.com/conda/conda/issues/7548
 * https://github.com/conda/conda/issues/3279
 
-Instead, we can create a conda environment using `conda env create -n dedalus -f dedalus_env.yaml`.
+Instead, we can create a conda environment using `conda env create -n dedalus -f env-dedalus.yaml`.
 This will setup an environment with all the run-time requirements from conda-forge/cryoem.
 We can then install Dedalus using `conda install -n dedalus --use-local dedalus`.
 
@@ -35,12 +35,10 @@ A simple installation path for now is to install Dedalus from source, but into a
 This requires the following:
 
 1. Setup a conda environment from the environment file:\
-   `conda env create -n dedalus -f dedalus_env.yaml`
+   `conda env create -n dedalus -f env-dedalus.yaml`
 
-2. Activate the environment and set the path variables required to build Dedalus:\
-   `conda activate dedalus`\
-   `export FFTW_PATH=$CONDA_PREFIX`\
-   `export MPI_PATH=$CONDA_PREFIX`
+2. Activate the environment:\
+   `conda activate dedalus`
 
 3. Build and install Dedalus from source:\
    `cd /path/to/dedalus_repo`\
