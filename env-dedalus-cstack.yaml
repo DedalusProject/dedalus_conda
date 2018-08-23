@@ -1,0 +1,9 @@
+name: dedalus-cstack
+channels:
+  - conda-forge
+  - cryoem
+  - defaults
+dependencies:
+  - conda-forge::openmpi
+  - cryoem::fftw-mpi
+  - conda-forge::hdf5
