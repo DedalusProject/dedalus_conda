@@ -15,6 +15,8 @@ CONDA_QUIET=1
 INSTALL_MPI=1
 # Install fftw from conda, otherwise FFTW_PATH must be set
 INSTALL_FFTW=1
+# BLAS options for numpy/scipy: "openblas" or "mkl"
+BLAS="openblas"
 
 ############
 ## Script ##
@@ -55,8 +57,22 @@ conda activate ${CONDA_ENV}
 echo "Updating conda-forge pip, setuptools, cython"
 conda install "${CARGS[@]}" -c conda-forge pip setuptools cython
 
-echo "Installing conda-forge openblas, numpy, scipy"
-conda install "${CARGS[@]}" -c conda-forge numpy=*=*openblas* scipy=*=*openblas*
+case "${BLAS}" in
+"openblas")
+    echo "Installing conda-forge openblas, numpy, scipy"
+    conda install "${CARGS[@]}" -c conda-forge numpy=*=*openblas* scipy=*=*openblas*
+    ;;
+"mkl")
+    echo "Installing defaults numpy, scipy"
+    conda install "${CARGS[@]}" -c defaults numpy scipy
+    # Statically link FFTW to avoid MKL symbols
+    export FFTW_STATIC=1
+    ;;
+*)
+    echo "ERROR: BLAS must be 'openblas' or 'mkl'"
+    exit 1
+    ;;
+esac
 
 if [ ${INSTALL_MPI} -eq 1 ]
 then
