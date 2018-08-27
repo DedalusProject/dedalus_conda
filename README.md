@@ -24,6 +24,7 @@ Reference github issues:
 
 * https://github.com/conda/conda/issues/7548
 * https://github.com/conda/conda/issues/3279
+* https://github.com/conda/conda/issues/7626
 
 Instead, we can create a conda environment using `conda env create -n dedalus -f env-dedalus.yaml`.
 This will setup an environment with all the run-time requirements from conda-forge/cryoem.
