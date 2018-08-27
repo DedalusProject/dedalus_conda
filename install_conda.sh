@@ -47,7 +47,7 @@ source ${CONDA_PREFIX}/etc/profile.d/conda.sh
 echo "Preventing conda from looking in ~/.local with 'export PYTHONNOUSERSITE=1'"
 export PYTHONNOUSERSITE=1
 
-echo "Preventing conda from looing in PYTHONPATH with 'unset PYTHONPATH'"
+echo "Preventing conda from looking in PYTHONPATH with 'unset PYTHONPATH'"
 unset PYTHONPATH
 
 echo "Building conda environment '${CONDA_ENV}'"
