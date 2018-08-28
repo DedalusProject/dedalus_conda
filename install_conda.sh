@@ -50,9 +50,24 @@ export PYTHONNOUSERSITE=1
 echo "Preventing conda from looking in PYTHONPATH with 'unset PYTHONPATH'"
 unset PYTHONPATH
 
-echo "Building conda environment '${CONDA_ENV}'"
-conda create "${CARGS[@]}" -c conda-forge python=3.6
-conda activate ${CONDA_ENV}
+# Check if conda environment exists
+conda activate ${CONDA_ENV} >&/dev/null
+if [ $? -eq 0 ]
+then
+    echo "WARNING: Conda environment '${CONDA_ENV}' already exists"
+    while true; do
+        read -p "Proceed ([y]/n)? " proceed
+        case "${proceed}" in
+            "y" | "") break ;;
+            "n") exit 1 ;;
+            *) ;;
+        esac
+    done
+else
+    echo "Building conda environment '${CONDA_ENV}'"
+    conda create "${CARGS[@]}" -c conda-forge python=3.6
+    conda activate ${CONDA_ENV}
+fi
 
 echo "Updating conda-forge pip, setuptools, cython"
 conda install "${CARGS[@]}" -c conda-forge pip setuptools cython
@@ -61,6 +76,8 @@ case "${BLAS}" in
 "openblas")
     echo "Installing conda-forge openblas, numpy, scipy"
     conda install "${CARGS[@]}" -c conda-forge numpy=*=*openblas* scipy=*=*openblas*
+    # Dynamically link FFTW
+    export FFTW_STATIC=0
     ;;
 "mkl")
     echo "Installing defaults numpy, scipy"
