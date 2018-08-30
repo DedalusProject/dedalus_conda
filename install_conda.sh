@@ -7,14 +7,21 @@
 
 # Conda environment name
 CONDA_ENV="dedalus"
+
 # Skip conda prompts
 CONDA_YES=1
+
 # Quiet conda output
 CONDA_QUIET=1
+
 # Install openmpi from conda, otherwise MPI_PATH must be set
 INSTALL_MPI=1
+#MPI_PATH=
+
 # Install fftw from conda, otherwise FFTW_PATH must be set
 INSTALL_FFTW=1
+#FFTW_PATH=
+
 # BLAS options for numpy/scipy: "openblas" or "mkl"
 BLAS="openblas"
 
@@ -22,7 +29,17 @@ BLAS="openblas"
 ## Script ##
 ############
 
-# Resolve options
+prompt_to_proceed () {
+    while true; do
+        read -p "Proceed ([y]/n)? " proceed
+        case "${proceed}" in
+            "y" | "") break ;;
+            "n") exit 1 ;;
+            *) ;;
+        esac
+    done
+}
+
 CARGS=(-n ${CONDA_ENV})
 if [ ${CONDA_YES} -eq 1 ]
 then
@@ -35,7 +52,7 @@ fi
 
 if [ -z ${CONDA_PREFIX} ]
 then
-    echo "ERROR: CONDA_PREFIX must be set"
+    >&2 echo "ERROR: CONDA_PREFIX must be set"
     exit 1
 else
     echo "CONDA_PREFIX set to '${CONDA_PREFIX}'"
@@ -55,16 +72,9 @@ conda activate ${CONDA_ENV} >&/dev/null
 if [ $? -eq 0 ]
 then
     echo "WARNING: Conda environment '${CONDA_ENV}' already exists"
-    while true; do
-        read -p "Proceed ([y]/n)? " proceed
-        case "${proceed}" in
-            "y" | "") break ;;
-            "n") exit 1 ;;
-            *) ;;
-        esac
-    done
+    prompt_to_proceed
 else
-    echo "Building conda environment '${CONDA_ENV}'"
+    echo "Building new conda environment '${CONDA_ENV}'"
     conda create "${CARGS[@]}" -c conda-forge python=3.6
     conda activate ${CONDA_ENV}
 fi
@@ -86,7 +96,7 @@ case "${BLAS}" in
     export FFTW_STATIC=1
     ;;
 *)
-    echo "ERROR: BLAS must be 'openblas' or 'mkl'"
+    >&2 echo "ERROR: BLAS must be 'openblas' or 'mkl'"
     exit 1
     ;;
 esac
@@ -99,7 +109,7 @@ else
     echo "Not installing openmpi."
     if [ -z ${MPI_PATH} ]
     then
-        echo "ERROR: MPI_PATH must be set"
+        >&2 echo "ERROR: MPI_PATH must be set"
         exit 1
     else
         echo "MPI_PATH set to '${MPI_PATH}'"
@@ -120,7 +130,7 @@ else
     echo "Not installing fftw."
     if [ -z ${FFTW_PATH} ]
     then
-        echo "ERROR: FFTW_PATH must be set"
+        >&2 echo "ERROR: FFTW_PATH must be set"
         exit 1
     else
         echo "FFTW_PATH set to '${FFTW_PATH}'"
