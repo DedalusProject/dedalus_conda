@@ -63,6 +63,7 @@ then
 fi
 
 if [ ${INSTALL_HDF5} -ne 1 ]
+then
     if [ -z ${HDF5_DIR} ]
     then
         >&2 echo "ERROR: HDF5_DIR must be set"
