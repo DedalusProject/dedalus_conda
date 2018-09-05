@@ -22,12 +22,55 @@ INSTALL_MPI=1
 INSTALL_FFTW=1
 #FFTW_PATH=
 
+# Install hdf5 from conda, otherwise HDF5_DIR must be set
+INSTALL_HDF5=1
+#HDF5_DIR=
+
 # BLAS options for numpy/scipy: "openblas" or "mkl"
 BLAS="openblas"
 
 ############
 ## Script ##
 ############
+
+# Check requirements
+if [ "${CONDA_DEFAULT_ENV}" != "base" ]
+then
+    >&2 echo "ERROR: Conda base environment must be activated"
+    exit 1
+fi
+
+if [ ${INSTALL_MPI} -ne 1 ]
+then
+    if [ -z ${MPI_PATH} ]
+    then
+        >&2 echo "ERROR: MPI_PATH must be set"
+        exit 1
+    else
+        echo "MPI_PATH set to '${MPI_PATH}'"
+    fi
+fi
+
+if [ ${INSTALL_FFTW} -ne 1 ]
+then
+    if [ -z ${FFTW_PATH} ]
+    then
+        >&2 echo "ERROR: FFTW_PATH must be set"
+        exit 1
+    else
+        echo "FFTW_PATH set to '${FFTW_PATH}'"
+    fi
+fi
+
+if [ ${INSTALL_HDF5} -ne 1 ]
+    if [ -z ${HDF5_DIR} ]
+    then
+        >&2 echo "ERROR: HDF5_DIR must be set"
+        exit 1
+    else
+        echo "HDF5_DIR set to '${HDF5_DIR}'"
+    fi
+fi
 
 prompt_to_proceed () {
     while true; do
@@ -48,12 +91,6 @@ fi
 if [ ${CONDA_QUIET} -eq 1 ]
 then
     CARGS+=(-q)
-fi
-
-if [ "${CONDA_DEFAULT_ENV}" != "base" ]
-then
-    >&2 echo "ERROR: Conda base environment must be activated"
-    exit 1
 fi
 
 echo "Setting up conda with 'source ${CONDA_PREFIX}/etc/profile.d/conda.sh'"
@@ -104,14 +141,7 @@ then
     echo "Installing conda-forge openmpi, mpi4py"
     conda install "${CARGS[@]}" -c conda-forge openmpi mpi4py
 else
-    echo "Not installing openmpi."
-    if [ -z ${MPI_PATH} ]
-    then
-        >&2 echo "ERROR: MPI_PATH must be set"
-        exit 1
-    else
-        echo "MPI_PATH set to '${MPI_PATH}'"
-    fi
+    echo "Not installing openmpi"
     echo "Installing mpi4py with pip"
     # Make sure mpicc will appear on path
     export PATH=${MPI_PATH}/bin:${PATH}
@@ -125,18 +155,20 @@ then
     # no-deps to avoid pulling cryoem openmpi
     conda install "${CARGS[@]}" -c cryoem --no-deps fftw-mpi
 else
-    echo "Not installing fftw."
-    if [ -z ${FFTW_PATH} ]
-    then
-        >&2 echo "ERROR: FFTW_PATH must be set"
-        exit 1
-    else
-        echo "FFTW_PATH set to '${FFTW_PATH}'"
-    fi
+    echo "Not installing fftw"
 fi
 
-echo "Installing conda-forge hdf5, h5py"
-conda install "${CARGS[@]}" -c conda-forge hdf5 h5py
+if [ ${INSTALL_HDF5} -eq 1 ]
+then
+    echo "Installing conda-forge hdf5, h5py"
+    conda install "${CARGS[@]}" -c conda-forge hdf5 h5py
+else
+    echo "Not installing hdf5"
+    echo "Installing h5py with pip"
+    # no-cache to avoid wheels from previous pip installs
+    # no-binary to build against linked hdf5
+    python3 -m pip install --no-cache --no-binary=h5py h5py
+fi
 
 echo "Installing conda-forge docopt, matplotlib"
 conda install "${CARGS[@]}" -c conda-forge docopt matplotlib
