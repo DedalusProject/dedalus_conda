@@ -1,5 +1,5 @@
 # Dedalus stack builder using conda, with options for own MPI and FFTW.
-# Run this file after installing conda and setting CONDA_PREFIX.
+# Run this file after installing conda and activating the base environment.
 
 #############
 ## Options ##
@@ -50,12 +50,10 @@ then
     CARGS+=(-q)
 fi
 
-if [ -z ${CONDA_PREFIX} ]
+if [ "${CONDA_DEFAULT_ENV}" != "base" ]
 then
-    >&2 echo "ERROR: CONDA_PREFIX must be set"
+    >&2 echo "ERROR: Conda base environment must be activated"
     exit 1
-else
-    echo "CONDA_PREFIX set to '${CONDA_PREFIX}'"
 fi
 
 echo "Setting up conda with 'source ${CONDA_PREFIX}/etc/profile.d/conda.sh'"
