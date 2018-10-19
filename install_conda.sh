@@ -176,7 +176,7 @@ conda install "${CARGS[@]}" -c conda-forge docopt matplotlib
 
 echo "Installing dedalus with pip"
 # no-cache to get latest version
-python3 -m pip install --no-cache --pre --extra-index-url https://testpypi.python.org/pypi dedalus
+python3 -m pip install --no-cache --pre dedalus
 
 echo "Installation complete in conda environment '${CONDA_ENV}'"
 conda deactivate
