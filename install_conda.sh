@@ -140,7 +140,7 @@ esac
 if [ ${INSTALL_MPI} -eq 1 ]
 then
     echo "Installing conda-forge openmpi, mpi4py"
-    conda install "${CARGS[@]}" -c conda-forge openmpi mpi4py
+    conda install "${CARGS[@]}" -c conda-forge openmpi==3.1.0 mpi4py
 else
     echo "Not installing openmpi"
     echo "Installing mpi4py with pip"
