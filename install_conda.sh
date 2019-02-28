@@ -111,7 +111,7 @@ then
     prompt_to_proceed
 else
     echo "Building new conda environment '${CONDA_ENV}'"
-    conda create "${CARGS[@]}" -c conda-forge python=3.6
+    conda create "${CARGS[@]}" -c conda-forge python=3.7
     conda activate ${CONDA_ENV}
 fi
 
@@ -176,7 +176,7 @@ conda install "${CARGS[@]}" -c conda-forge docopt matplotlib
 
 echo "Installing dedalus with pip"
 # no-cache to get latest version
-python3 -m pip install --no-cache --pre dedalus
+python3 -m pip install --no-cache dedalus
 
 echo "Installation complete in conda environment '${CONDA_ENV}'"
 conda deactivate
