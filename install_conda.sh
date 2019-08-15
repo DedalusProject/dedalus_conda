@@ -16,15 +16,15 @@ CONDA_QUIET=1
 
 # Install openmpi from conda, otherwise MPI_PATH must be set
 INSTALL_MPI=1
-#MPI_PATH=
+#export MPI_PATH=
 
 # Install fftw from conda, otherwise FFTW_PATH must be set
 INSTALL_FFTW=1
-#FFTW_PATH=
+#export FFTW_PATH=
 
 # Install hdf5 from conda, otherwise HDF5_DIR must be set
 INSTALL_HDF5=1
-#HDF5_DIR=
+#export HDF5_DIR=
 
 # BLAS options for numpy/scipy: "openblas" or "mkl"
 BLAS="openblas"
@@ -175,7 +175,7 @@ echo "Installing conda-forge docopt, matplotlib"
 conda install "${CARGS[@]}" -c conda-forge docopt matplotlib
 
 echo "Installing dedalus with pip"
-# no-cache to get latest version
+# no-cache to avoid wheels from previous pip installs
 python3 -m pip install --no-cache dedalus
 
 echo "Installation complete in conda environment '${CONDA_ENV}'"
