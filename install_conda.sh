@@ -29,6 +29,9 @@ INSTALL_HDF5=1
 # BLAS options for numpy/scipy: "openblas" or "mkl"
 BLAS="openblas"
 
+# Python version
+PYTHON_VERSION="3.8"
+
 ############
 ## Script ##
 ############
@@ -111,7 +114,7 @@ then
     prompt_to_proceed
 else
     echo "Building new conda environment '${CONDA_ENV}'"
-    conda create "${CARGS[@]}" -c conda-forge python=3.7
+    conda create "${CARGS[@]}" -c conda-forge python=${PYTHON_VERSION}
     conda activate ${CONDA_ENV}
 fi
 
@@ -140,7 +143,7 @@ esac
 if [ ${INSTALL_MPI} -eq 1 ]
 then
     echo "Installing conda-forge openmpi, mpi4py"
-    conda install "${CARGS[@]}" -c conda-forge openmpi==3.1.0 mpi4py
+    conda install "${CARGS[@]}" -c conda-forge openmpi openmpi-mpicc mpi4py
 else
     echo "Not installing openmpi"
     echo "Installing mpi4py with pip"
@@ -152,9 +155,9 @@ fi
 
 if [ ${INSTALL_FFTW} -eq 1 ]
 then
-    echo "Installing cryoem fftw-mpi"
-    # no-deps to avoid pulling cryoem openmpi
-    conda install "${CARGS[@]}" -c cryoem --no-deps fftw-mpi
+    echo "Installing conda-forge fftw"
+    # no-deps to avoid pulling openmpi
+    conda install "${CARGS[@]}" -c conda-forge --no-deps fftw=*=*openmpi*
 else
     echo "Not installing fftw"
 fi
