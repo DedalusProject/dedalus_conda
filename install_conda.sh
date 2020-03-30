@@ -114,7 +114,7 @@ then
     prompt_to_proceed
 else
     echo "Building new conda environment '${CONDA_ENV}'"
-    conda create "${CARGS[@]}" -c conda-forge python=${PYTHON_VERSION}
+    conda create "${CARGS[@]}" -c conda-forge "python=${PYTHON_VERSION}"
     conda activate ${CONDA_ENV}
 fi
 
@@ -157,7 +157,7 @@ if [ ${INSTALL_FFTW} -eq 1 ]
 then
     echo "Installing conda-forge fftw"
     # no-deps to avoid pulling openmpi
-    conda install "${CARGS[@]}" -c conda-forge --no-deps fftw=*=*openmpi*
+    conda install "${CARGS[@]}" -c conda-forge --no-deps "fftw=*=*openmpi*"
 else
     echo "Not installing fftw"
 fi
