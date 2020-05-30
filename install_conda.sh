@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # Dedalus stack builder using conda, with options for own MPI and FFTW.
 # Run this file after installing conda and activating the base environment.
 
@@ -112,6 +114,12 @@ if [ $? -eq 0 ]
 then
     echo "WARNING: Conda environment '${CONDA_ENV}' already exists"
     prompt_to_proceed
+elif [[ "$OSTYPE" == "darwin"* ]]
+then
+    # Fix clang to v9 on mac to avoid linker problems with v10
+    echo "Building new conda environment '${CONDA_ENV}'"
+    conda create "${CARGS[@]}" -c conda-forge "python=${PYTHON_VERSION}" "clang=9"
+    conda activate ${CONDA_ENV}
 else
     echo "Building new conda environment '${CONDA_ENV}'"
     conda create "${CARGS[@]}" -c conda-forge "python=${PYTHON_VERSION}"
