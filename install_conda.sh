@@ -126,8 +126,8 @@ else
     conda activate ${CONDA_ENV}
 fi
 
-echo "Updating conda-forge pip, setuptools, cython"
-conda install "${CARGS[@]}" -c conda-forge pip setuptools cython
+echo "Updating conda-forge pip, wheel, setuptools, cython"
+conda install "${CARGS[@]}" -c conda-forge pip wheel setuptools cython
 
 case "${BLAS}" in
 "openblas")
@@ -157,6 +157,7 @@ else
     echo "Installing mpi4py with pip"
     # Make sure mpicc will appear on path
     export PATH=${MPI_PATH}/bin:${PATH}
+    echo "which mpicc: `which mpicc`"
     # no-cache to avoid wheels from previous pip installs
     python3 -m pip install --no-cache mpi4py
 fi
@@ -187,7 +188,8 @@ conda install "${CARGS[@]}" -c conda-forge docopt matplotlib
 
 echo "Installing dedalus with pip"
 # no-cache to avoid wheels from previous pip installs
-python3 -m pip install --no-cache dedalus
+# no-build-isolation to use established stack for building wheel
+python3 -m pip install --no-cache --no-build-isolation dedalus
 
 echo "Installation complete in conda environment '${CONDA_ENV}'"
 conda deactivate
