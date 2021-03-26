@@ -126,13 +126,13 @@ conda install "${CARGS[@]}" -c conda-forge pip wheel setuptools cython
 case "${BLAS}" in
 "openblas")
     echo "Installing conda-forge openblas, numpy, scipy"
-    conda install "${CARGS[@]}" -c conda-forge "blas=*=openblas" numpy scipy
+    conda install "${CARGS[@]}" -c conda-forge "libblas=*=*openblas" numpy scipy
     # Dynamically link FFTW
     export FFTW_STATIC=0
     ;;
 "mkl")
     echo "Installing conda-forge mkl, numpy, scipy"
-    conda install "${CARGS[@]}" -c conda-forge "blas=*=mkl" numpy scipy
+    conda install "${CARGS[@]}" -c conda-forge "libblas=*=*mkl" numpy scipy
     # Statically link FFTW to avoid MKL symbols
     export FFTW_STATIC=1
     ;;
