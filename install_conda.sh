@@ -144,8 +144,8 @@ esac
 
 if [ ${INSTALL_MPI} -eq 1 ]
 then
-    echo "Installing conda-forge openmpi, mpi4py"
-    conda install "${CARGS[@]}" -c conda-forge openmpi openmpi-mpicc mpi4py
+    echo "Installing conda-forge compilers, openmpi, mpi4py"
+    conda install "${CARGS[@]}" -c conda-forge compilers openmpi openmpi-mpicc mpi4py
 else
     echo "Not installing openmpi"
     echo "Installing mpi4py with pip"
