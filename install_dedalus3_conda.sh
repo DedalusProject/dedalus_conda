@@ -184,6 +184,10 @@ echo "Installing dedalus with pip"
 # no-cache to avoid wheels from previous pip installs
 python3 -m pip install --no-cache http://github.com/dedalusproject/dedalus/zipball/d3/
 
+echo "Disabled threading by default in the environment"
+conda env config vars set OMP_NUM_THREADS=1
+conda env config vars set NUMEXPR_MAX_THREADS=1
+
 echo "Installation complete in conda environment '${CONDA_ENV}'"
 conda deactivate
 
