@@ -32,7 +32,7 @@ INSTALL_HDF5=1
 BLAS="openblas"
 
 # Python version
-PYTHON_VERSION="3.8"
+PYTHON_VERSION="3.9"
 
 ############
 ## Script ##
