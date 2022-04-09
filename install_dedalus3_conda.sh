@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Dedalus stack builder using conda, with options for own MPI and FFTW.
+# Dedalus stack builder using conda, with options for custom MPI/FFTW/HDF5.
 # Run this file after installing conda and activating the base environment.
 
 #############
@@ -32,11 +32,22 @@ INSTALL_HDF5=1
 BLAS="openblas"
 
 # Python version
-PYTHON_VERSION="3.9"
+PYTHON_VERSION="3.10"
 
 ############
 ## Script ##
 ############
+
+prompt_to_proceed () {
+    while true; do
+        read -p "Proceed ([y]/n)? " proceed
+        case "${proceed}" in
+            "y" | "") break ;;
+            "n") exit 1 ;;
+            *) ;;
+        esac
+    done
+}
 
 # Check requirements
 if [ "${CONDA_DEFAULT_ENV}" != "base" ]
@@ -78,17 +89,7 @@ then
     fi
 fi
 
-prompt_to_proceed () {
-    while true; do
-        read -p "Proceed ([y]/n)? " proceed
-        case "${proceed}" in
-            "y" | "") break ;;
-            "n") exit 1 ;;
-            *) ;;
-        esac
-    done
-}
-
+# Set conda flags
 CARGS=(-n ${CONDA_ENV})
 if [ ${CONDA_YES} -eq 1 ]
 then
@@ -116,23 +117,27 @@ then
     prompt_to_proceed
 else
     echo "Building new conda environment '${CONDA_ENV}'"
-    conda create "${CARGS[@]}" -c conda-forge "python=${PYTHON_VERSION}"
+    conda create "${CARGS[@]}"
     conda activate ${CONDA_ENV}
 fi
 
-echo "Updating conda-forge pip, wheel, setuptools, cython"
-conda install "${CARGS[@]}" -c conda-forge pip wheel setuptools cython
+echo "Setting conda-forge as strict priority channel"
+conda config --add channels conda-forge
+conda config --set channel_priority strict
+
+echo "Installing conda-forge python, pip, wheel, setuptools, cython"
+conda install "${CARGS[@]}" "python=${PYTHON_VERSION}" pip wheel setuptools cython
 
 case "${BLAS}" in
 "openblas")
     echo "Installing conda-forge openblas, numpy, scipy"
-    conda install "${CARGS[@]}" -c conda-forge "libblas=*=*openblas" numpy scipy
+    conda install "${CARGS[@]}" "libblas=*=*openblas" numpy scipy
     # Dynamically link FFTW
     export FFTW_STATIC=0
     ;;
 "mkl")
     echo "Installing conda-forge mkl, numpy, scipy"
-    conda install "${CARGS[@]}" -c conda-forge "libblas=*=*mkl" numpy scipy
+    conda install "${CARGS[@]}" "libblas=*=*mkl" numpy scipy
     # Statically link FFTW to avoid MKL symbols
     export FFTW_STATIC=1
     ;;
@@ -145,7 +150,7 @@ esac
 if [ ${INSTALL_MPI} -eq 1 ]
 then
     echo "Installing conda-forge compilers, openmpi, mpi4py"
-    conda install "${CARGS[@]}" -c conda-forge compilers openmpi openmpi-mpicc mpi4py
+    conda install "${CARGS[@]}" compilers openmpi openmpi-mpicc mpi4py
 else
     echo "Not installing openmpi"
     echo "Installing mpi4py with pip"
@@ -160,7 +165,7 @@ if [ ${INSTALL_FFTW} -eq 1 ]
 then
     echo "Installing conda-forge fftw"
     # no-deps to avoid pulling openmpi
-    conda install "${CARGS[@]}" -c conda-forge --no-deps "fftw=*=*openmpi*"
+    conda install "${CARGS[@]}" --no-deps "fftw=*=*openmpi*"
 else
     echo "Not installing fftw"
 fi
@@ -168,7 +173,7 @@ fi
 if [ ${INSTALL_HDF5} -eq 1 ]
 then
     echo "Installing conda-forge hdf5, h5py"
-    conda install "${CARGS[@]}" -c conda-forge hdf5 h5py
+    conda install "${CARGS[@]}" hdf5 h5py
 else
     echo "Not installing hdf5"
     echo "Installing h5py with pip"
@@ -178,7 +183,7 @@ else
 fi
 
 echo "Installing conda-forge docopt, matplotlib"
-conda install "${CARGS[@]}" -c conda-forge docopt matplotlib
+conda install "${CARGS[@]}" docopt matplotlib
 
 echo "Installing dedalus with pip"
 # no-cache to avoid wheels from previous pip installs
