@@ -16,17 +16,21 @@ CONDA_YES=1
 # Quiet conda output
 CONDA_QUIET=1
 
-# Install openmpi from conda, otherwise MPI_PATH must be set
+# Install OpenMPI from conda, otherwise MPI_PATH must be set to your custom MPI prefix
 INSTALL_MPI=1
 #export MPI_PATH=
 
-# Install fftw from conda, otherwise FFTW_PATH must be set
+# Install FFTW from conda, otherwise FFTW_PATH must be set to your custom FFTW prefix
+# Note: FFTW from conda will likely only work with custom MPIs that are OpenMPI
 INSTALL_FFTW=1
 #export FFTW_PATH=
 
-# Install hdf5 from conda, otherwise HDF5_DIR must be set
+# Install HDF5 from conda, otherwise HDF5_DIR must be set to your custom HDF5 prefix
+# Note: HDF5 from conda will only be built with parallel support if MPI is installed from conda
+# Note: If your custom HDF5 is built with parallel support, HDF5_MPI must be set to "ON"
 INSTALL_HDF5=1
 #export HDF5_DIR=
+#export HDF5_MPI="ON"
 
 # BLAS options for numpy/scipy: "openblas" or "mkl"
 BLAS="openblas"
@@ -86,6 +90,7 @@ then
         exit 1
     else
         echo "HDF5_DIR set to '${HDF5_DIR}'"
+        echo "HDF5_MPI set to '${HDF5_MPI}'"
     fi
 fi
 
@@ -131,6 +136,11 @@ conda install "${CARGS[@]}" "python=${PYTHON_VERSION}" pip wheel setuptools cyth
 case "${BLAS}" in
 "openblas")
     echo "Installing conda-forge openblas, numpy, scipy"
+    # Pin openblas on apple silicon since 0.3.20 causes ggev errors
+    if [ $(uname -s) == "Darwin" ] && [ $(uname -m) == "arm64" ]
+    then
+        conda install "${CARGS[@]}" "libopenblas<0.3.20"
+    fi
     conda install "${CARGS[@]}" "libblas=*=*openblas" numpy scipy
     # Dynamically link FFTW
     export FFTW_STATIC=0
@@ -172,14 +182,29 @@ fi
 
 if [ ${INSTALL_HDF5} -eq 1 ]
 then
-    echo "Installing conda-forge hdf5, h5py"
-    conda install "${CARGS[@]}" hdf5 h5py
+    if [ ${INSTALL_MPI} -eq 1 ]
+    then
+        echo "Installing parallel conda-forge hdf5, h5py"
+        conda install "${CARGS[@]}" "hdf5=*=mpi*" "h5py=*=mpi*"
+    else
+        echo "Installing serial conda-forge hdf5, h5py"
+        conda install "${CARGS[@]}" "hdf5=*=nompi*" "h5py=*=nompi*"
+    fi
 else
     echo "Not installing hdf5"
-    echo "Installing h5py with pip"
-    # no-cache to avoid wheels from previous pip installs
-    # no-binary to build against linked hdf5
-    python3 -m pip install --no-cache --no-binary=h5py h5py
+    if [ ${HDF5_MPI} == "ON" ]
+    then
+        echo "Installing parallel h5py with pip"
+        # CC=mpicc to build with parallel support
+        # no-cache to avoid wheels from previous pip installs
+        # no-binary to build against linked hdf5
+        CC=mpicc python3 -m pip install --no-cache --no-binary=h5py h5py
+    else
+        echo "Installing serial h5py with pip"
+        # no-cache to avoid wheels from previous pip installs
+        # no-binary to build against linked hdf5
+        python3 -m pip install --no-cache --no-binary=h5py h5py
+    fi
 fi
 
 echo "Installing conda-forge docopt, matplotlib"
