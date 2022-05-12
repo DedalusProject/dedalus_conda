@@ -1,0 +1,80 @@
+
+name: Test conda_install_dedalus3.sh
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+    branches:
+      - '*'
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            label: linux-64
+          - os: macos-latest
+            label: osx-64
+    name: ${{ matrix.label }}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Setup miniforge
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          miniforge-version: latest
+          auto-activate-base: true
+          activate-environment: ""
+      - name: Run conda installation
+        shell: bash -l {0}
+        run: bash conda_install_dedalus3.sh
+      - name: Test conda installation
+        shell: bash -l {0}
+        run: |
+          conda activate dedalus3
+          python3 -m dedalus test
+
+name: Test conda_install_dedalus2.sh
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+    branches:
+      - '*'
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            label: linux-64
+          - os: macos-latest
+            label: osx-64
+    name: ${{ matrix.label }}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Setup miniforge
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          miniforge-version: latest
+          auto-activate-base: true
+          activate-environment: ""
+      - name: Run conda installation
+        shell: bash -l {0}
+        run: bash conda_install_dedalus2.sh
+      - name: Test conda installation
+        shell: bash -l {0}
+        run: |
+          conda activate dedalus2
+          python3 -m dedalus test
