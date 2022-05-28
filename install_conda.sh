@@ -38,6 +38,10 @@ BLAS="openblas"
 # Python version
 PYTHON_VERSION="3.10"
 
+# Install native arm64 build on Apple Silicon
+# Note: Only relevent on Apple Silicon machines, where native arm64 builds may exhibit errors
+APPLE_SILICON_BUILD_ARM=0
+
 ############
 ## Script ##
 ############
@@ -94,6 +98,15 @@ then
     fi
 fi
 
+# Unset arm build flag unless on Apple Silicon
+if [ $(uname -s) == "Darwin" ] && [ $(uname -m) == "arm64" ]
+then
+    ON_APPLE_SILICON=1
+else
+    ON_APPLE_SILICON=0
+    APPLE_SILICON_BUILD_ARM=0
+fi
+
 # Set conda flags
 CARGS=(-n ${CONDA_ENV})
 if [ ${CONDA_YES} -eq 1 ]
@@ -122,8 +135,15 @@ then
     prompt_to_proceed
 else
     echo "Building new conda environment '${CONDA_ENV}'"
-    conda create "${CARGS[@]}"
-    conda activate ${CONDA_ENV}
+    if [ ${ON_APPLE_SILICON} -eq 1 ] && [ ${APPLE_SILICON_BUILD_ARM} -eq 0 ]
+    then
+        CONDA_SUBDIR=osx-64 conda create "${CARGS[@]}"
+        conda activate ${CONDA_ENV}
+        conda config --env --set subdir osx-64
+    else
+        conda create "${CARGS[@]}"
+        conda activate ${CONDA_ENV}
+    fi
 fi
 
 echo "Setting conda-forge as strict priority channel"
@@ -137,7 +157,7 @@ case "${BLAS}" in
 "openblas")
     echo "Installing conda-forge openblas, numpy, scipy"
     # Pin openblas on apple silicon since 0.3.20 causes ggev errors
-    if [ $(uname -s) == "Darwin" ] && [ $(uname -m) == "arm64" ]
+    if [ ${APPLE_SILICON_BUILD_ARM} -eq 1 ]
     then
         conda install "${CARGS[@]}" "libopenblas<0.3.20"
     fi
@@ -218,6 +238,8 @@ echo "Disabled threading by default in the environment"
 conda env config vars set OMP_NUM_THREADS=1
 conda env config vars set NUMEXPR_MAX_THREADS=1
 
+echo
 echo "Installation complete in conda environment '${CONDA_ENV}'"
+echo
 conda deactivate
 
