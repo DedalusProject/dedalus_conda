@@ -231,8 +231,9 @@ echo "Installing conda-forge docopt, matplotlib"
 conda install "${CARGS[@]}" docopt matplotlib
 
 echo "Installing dedalus with pip"
+# CC=mpicc to ensure proper MPI linking
 # no-cache to avoid wheels from previous pip installs
-python3 -m pip install --no-cache http://github.com/dedalusproject/dedalus/zipball/master/
+CC=mpicc python3 -m pip install --no-cache http://github.com/dedalusproject/dedalus/zipball/master/
 
 echo "Disabled threading by default in the environment"
 conda env config vars set OMP_NUM_THREADS=1
