@@ -1,11 +1,12 @@
-# Dedalus conda builds
+# Dedalus Conda builds
 
-## Conda package
+## Conda-forge feedstock
 
-There is currently a [Dedalus feedstock on conda-forge](https://github.com/conda-forge/dedalus-feedstock), but it has not been updated recently and is not currently maintained by the Dedalus developers.
-This package may work if you want to install your entire software stack from conda-forge, but we have not tested it ourselves and are not currently supporting its use.
+There is currently a [Dedalus feedstock on conda-forge](https://github.com/conda-forge/dedalus-feedstock) which we have recently updated to support the latest Dedalus v2 release.
+This feedstock builds Dedalus for Linux and macOS (x86 only) with mpich and openmpi support.
+This build is recommended for laptops, workstations, and clusters that do not require linking to custom C libraries.
 
 ## Build scripts
 
-The scripts in this repository will build a new conda environment for Dedalus and will allow you to link to system-specific MPI/FFTW/HDF5 libraries, if desired.
-These scripts are tested nightly via GitHub Actions on Ubuntu and MacOS on x86 architectures.
+The scripts in this repository will build a new Conda environment for Dedalus and will allow you to link to system-specific MPI/FFTW/HDF5 libraries, if desired.
+These scripts are tested nightly on Ubuntu and macOS (x86 only) via GitHub Actions.
