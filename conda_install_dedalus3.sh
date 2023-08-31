@@ -151,7 +151,7 @@ conda config --add channels conda-forge
 conda config --set channel_priority strict
 
 echo "Installing conda-forge python, pip, wheel, setuptools, cython"
-conda install "${CARGS[@]}" "python=${PYTHON_VERSION}" pip wheel setuptools cython
+conda install "${CARGS[@]}" "python=${PYTHON_VERSION}" pip wheel setuptools "cython<3.0"
 
 case "${BLAS}" in
 "openblas")
@@ -233,7 +233,7 @@ conda install "${CARGS[@]}" docopt matplotlib
 echo "Installing dedalus with pip"
 # CC=mpicc to ensure proper MPI linking
 # no-cache to avoid wheels from previous pip installs
-CC=mpicc python3 -m pip install --no-cache http://github.com/dedalusproject/dedalus/zipball/master/
+CC=mpicc python3 -m pip install --no-cache --no-build-isolation http://github.com/dedalusproject/dedalus/zipball/master/
 
 echo "Disabled threading by default in the environment"
 conda env config vars set OMP_NUM_THREADS=1
