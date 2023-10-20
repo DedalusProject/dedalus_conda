@@ -36,7 +36,7 @@ INSTALL_HDF5=1
 BLAS="openblas"
 
 # Python version
-PYTHON_VERSION="3.10"
+PYTHON_VERSION="3.12"
 
 # Install native arm64 build on Apple Silicon
 # Note: Only relevent on Apple Silicon machines, where native arm64 builds may exhibit errors
@@ -151,7 +151,7 @@ conda config --add channels conda-forge
 conda config --set channel_priority strict
 
 echo "Installing conda-forge python, pip, wheel, setuptools, cython"
-conda install "${CARGS[@]}" "python=${PYTHON_VERSION}" pip wheel setuptools "cython<3.0"
+conda install "${CARGS[@]}" "python=${PYTHON_VERSION}" pip wheel setuptools cython
 
 case "${BLAS}" in
 "openblas")

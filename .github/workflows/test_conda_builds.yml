@@ -69,7 +69,7 @@ jobs:
           conda activate dedalus2
           conda env config vars set OMP_NUM_THREADS=1
           conda env config vars set NUMEXPR_MAX_THREADS=1
-          conda install -y -c conda-forge dedalus c-compiler "h5py=*=mpi*" "cython<3.0"
+          conda install -y -c conda-forge dedalus c-compiler cython "h5py=*=mpi*"
           conda uninstall -y --force dedalus
           CC=mpicc pip3 install --no-cache --no-build-isolation http://github.com/dedalusproject/dedalus/zipball/v2_master/
       - name: Test build
@@ -103,7 +103,7 @@ jobs:
           conda activate dedalus3
           conda env config vars set OMP_NUM_THREADS=1
           conda env config vars set NUMEXPR_MAX_THREADS=1
-          conda install -y -c conda-forge dedalus c-compiler "h5py=*=mpi*" "cython<3.0"
+          conda install -y -c conda-forge dedalus c-compiler cython "h5py=*=mpi*"
           conda uninstall -y --force dedalus
           CC=mpicc pip3 install --no-cache --no-build-isolation http://github.com/dedalusproject/dedalus/zipball/master/
       - name: Test build
